@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Stacja 4 – Finał</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    html, body {
+      margin: 0; padding: 0;
+      height: 100%;
+      background-color: #000;
+      overflow: hidden;
+      font-family: 'Share Tech Mono', monospace;
+      color: #00ffcc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #matrixCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 640px;
+      width: 90vw;
+      max-height: 80vh;
+      background: rgba(0,0,0,0.85);
+      border: 2px solid #00ffcc;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #00ffcc;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 28px;
+      color: #ff0055;
+      text-shadow: 0 0 6px #ff0055;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 18px;
+      background: #000;
+      color: #00ffcc;
+      border: 2px solid #00ffcc;
+      font-weight: bold;
+      margin: 10px 0;
+      box-sizing: border-box;
+    }
+
+    button {
+      background: none;
+      border: 2px solid #00ffcc;
+      color: #00ffcc;
+      padding: 12px 24px;
+      font-size: 18px;
+      cursor: pointer;
+      margin-top: 20px;
+      font-weight: bold;
+      text-transform: uppercase;
+      transition: background-color 0.3s, color 0.3s;
+      text-shadow: 0 0 6px #00ffcc;
+    }
+    button:hover {
+      background-color: #00ffcc;
+      color: #000;
+      text-shadow: none;
+    }
+
+    iframe {
+      width: 100%;
+      height: 550px;
+      margin-top: 20px;
+      border-radius: 8px;
+      border: none;
+      box-shadow: 0 0 15px rgba(0,255,204,0.3);
+    }
+
+    #error {
+      color: red;
+      margin-top: 20px;
+      font-weight: bold;
+      text-shadow: 0 0 4px red;
+    }
+
+    #finalMessage {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+      color: #00ffcc;
+      text-shadow: 0 0 6px #00ffcc;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <div class="container">
+    <h1>&gt; STACJA [4/4] – FINAŁ</h1>
+    <p>Wpisz finałowy kod składający się z trzech fragmentów otrzymanych w poprzednich stacjach:</p>
+
+    <input type="text" id="finalCode" placeholder="Wpisz kod" autocomplete="off" />
+    <button onclick="checkCode()">Zatwierdź kod</button>
+
+    <div id="formSection" class="hidden">
+      <h2>&gt; GRATULACJE!</h2>
+      <p>Kod poprawny! Wypełnij poniższy formularz, aby odebrać nagrodę:</p>
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLScuPc05HBW7mP9aYCbsUHq6s7HZJ_hj5kSH4PdIW_EjxOqRYA/viewform?embedded=true"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        aria-label="Formularz Google"
+      >Ładuję…</iframe>
+      <button id="confirmSubmitBtn" onclick="showFinalMessage()" class="hidden">
+        Potwierdzam wysłanie formularza
+      </button>
+    </div>
+
+    <div id="error" class="hidden">
+      Błędny kod! Spróbuj ponownie.
+    </div>
+
+    <div id="finalMessage" class="hidden">
+      Po wypełnieniu formularza, udaj się do <strong>pokoju XXXX w 42 Warsaw</strong>, aby odebrać
+      swoją nagrodę! 🎉<br><br>
+(przy odbiorze należy pokazać potwierdzenie wysłania)<br>
+    </div>
+  </div>
+
+  <script>
+    // Kod sprawdzania wpisanego kodu
+    function checkCode() {
+      const code = document.getElementById('finalCode').value.trim();
+      if (code.toUpperCase() === '06BHL12') {
+        document.getElementById('formSection').classList.remove('hidden');
+        document.getElementById('error').classList.add('hidden');
+        document.getElementById('confirmSubmitBtn').classList.remove('hidden');
+      } else {
+        document.getElementById('error').classList.remove('hidden');
+        document.getElementById('formSection').classList.add('hidden');
+        document.getElementById('confirmSubmitBtn').classList.add('hidden');
+        document.getElementById('finalMessage').classList.add('hidden');
+      }
+    }
+
+    function showFinalMessage() {
+      document.getElementById('finalMessage').classList.remove('hidden');
+      document.getElementById('confirmSubmitBtn').classList.add('hidden');
+    }
+
+    // --- Animacja matrix ---
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+    const fontSize = 18;
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<>/-=+@#$%^&*';
+
+    let columns;
+    let drops = [];
+
+    // Parametry animacji powtarzanej co ~1 sekundy
+    let startTime;
+    const animationDuration = 1000; // 1 sekunda w ms
+
+    function setup() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * devicePixelRatio;
+      canvas.height = height * devicePixelRatio;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(devicePixelRatio, devicePixelRatio);
+
+      columns = Math.floor(width / fontSize);
+      drops = new Array(columns).fill(1);
+    }
+
+    function draw(time) {
+      if (!startTime) startTime = time;
+      const elapsed = time - startTime;
+
+      // Czyszczenie z lekkim przezroczystym czarnym, żeby zostawić "smugi"
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.15)';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.fillStyle = '#00ffcc';
+      ctx.font = fontSize + 'px "Share Tech Mono"';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = characters.charAt(Math.floor(Math.random() * characters.length));
+        const y = (drops[i] * fontSize) % height;
+        ctx.fillText(text, i * fontSize, y);
+
+        // Animacja ruchu w dół w pierwszej połowie cyklu, potem reset
+        if (elapsed % animationDuration < animationDuration / 2) {
+          drops[i]++;
+        } else {
+          drops[i] = (drops[i] + 1) % (height / fontSize);
+        }
+      }
+
+      if (elapsed < animationDuration) {
+        requestAnimationFrame(draw);
+      } else {
+        // Reset animacji po upływie 1 sekundy, aby powtarzać efekt od nowa
+        startTime = time;
+        drops = new Array(columns).fill(1);
+        requestAnimationFrame(draw);
+      }
+    }
+
+    function onResize() {
+      setup();
+    }
+
+    window.addEventListener('resize', onResize);
+
+    setup();
+    requestAnimationFrame(draw);
+  </script>
+</body>
+</html>
+
