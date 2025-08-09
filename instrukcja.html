@@ -9,66 +9,83 @@
     :root {
       --primary: #00ffcc;
       --accent: #ff0055;
-      --bg: #0a0a0a;
+      --bg1: #050505;
+      --bg2: #0d0d0d;
     }
 
-    *, *::before, *::after {
-      box-sizing: border-box;
-    }
+    *, *::before, *::after { box-sizing: border-box; }
 
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
       font-family: 'Share Tech Mono', monospace;
-      background-color: var(--bg);
+      background: linear-gradient(160deg, var(--bg1), var(--bg2));
+      background-size: 400% 400%;
+      animation: bgMove 12s ease-in-out infinite;
       color: var(--primary);
-      overflow: hidden;
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      position: relative;
       padding-top: 40px;
+      overflow: hidden;
+      position: relative;
     }
 
-    /* Neonowy szkic dinozaura */
+    @keyframes bgMove {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    /* Efekt szumu */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: url('https://www.transparenttextures.com/patterns/noise.png');
+      opacity: 0.05;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Dino */
     .dino-sketch {
       position: fixed;
-      left: -120px; /* wysunięty zza krawędzi ekranu */
+      left: -120px;
       top: 50%;
       transform: translateY(-50%);
       width: 725px;
-      height: auto;
       opacity: 0.25;
-      filter: drop-shadow(0 0 6px var(--primary))
-              drop-shadow(0 0 12px var(--primary))
+      filter: drop-shadow(0 0 10px var(--primary))
               drop-shadow(0 0 25px var(--primary));
       pointer-events: none;
       user-select: none;
       z-index: 0;
     }
 
+    /* Główne okno */
     main {
       max-width: 800px;
       padding: 30px 40px;
       text-align: center;
-      background: rgba(0, 0, 0, 0.65);
+      background: rgba(0, 0, 0, 0.7);
       border: 2px solid var(--primary);
       border-radius: 16px;
       box-shadow:
         0 0 15px var(--primary),
         0 0 40px var(--primary);
       z-index: 2;
-      user-select: none;
       margin-top: 20px;
       animation: fadeIn 1.2s ease-out both;
+      backdrop-filter: blur(6px);
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(-20px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
+    /* Tytuł */
     h2 {
       color: var(--accent);
       font-size: 2.8rem;
@@ -76,15 +93,20 @@
       text-shadow:
         0 0 10px var(--accent),
         0 0 30px var(--accent);
+      animation: pulse 2.5s infinite;
     }
 
+    @keyframes pulse {
+      0%, 100% { text-shadow: 0 0 10px var(--accent), 0 0 30px var(--accent); }
+      50% { text-shadow: 0 0 20px var(--accent), 0 0 50px var(--accent); }
+    }
+
+    /* Tekst */
     p {
       font-size: 1.3rem;
       line-height: 1.7;
       margin-bottom: 35px;
-      text-shadow:
-        0 0 8px var(--primary),
-        0 0 18px var(--primary);
+      text-shadow: 0 0 8px var(--primary), 0 0 18px var(--primary);
     }
 
     strong {
@@ -92,6 +114,7 @@
       text-shadow: 0 0 10px var(--accent);
     }
 
+    /* Przycisk */
     button {
       background: transparent;
       border: 3px solid var(--primary);
@@ -102,35 +125,26 @@
       border-radius: 12px;
       font-weight: bold;
       letter-spacing: 2px;
-      box-shadow:
-        0 0 12px var(--primary),
-        0 0 30px var(--primary);
-      transition:
-        background-color 0.3s ease,
-        box-shadow 0.3s ease,
-        color 0.3s ease,
-        border-color 0.3s ease,
-        transform 0.2s ease;
-      user-select: none;
-      position: relative;
-      z-index: 2;
+      box-shadow: 0 0 12px var(--primary), 0 0 30px var(--primary);
+      transition: all 0.3s ease;
+      animation: glowPulse 3s infinite;
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 12px var(--primary), 0 0 30px var(--primary); }
+      50% { box-shadow: 0 0 20px var(--primary), 0 0 50px var(--accent); }
     }
 
     button:hover {
       background-color: var(--primary);
       color: #000;
       border-color: var(--accent);
-      box-shadow:
-        0 0 25px var(--primary),
-        0 0 60px var(--accent),
-        0 0 90px var(--accent);
+      box-shadow: 0 0 25px var(--primary), 0 0 60px var(--accent);
     }
 
-    button:active {
-      transform: scale(0.96);
-    }
+    button:active { transform: scale(0.96); }
 
-    /* --- Latające cyfry w tle --- */
+    /* Cyfry */
     .digit {
       position: fixed;
       font-size: 30px;
@@ -139,11 +153,10 @@
       text-shadow: 0 0 6px var(--primary), 0 0 12px var(--primary);
       user-select: none;
       pointer-events: none;
-      will-change: transform;
       font-weight: bold;
     }
 
-    /* --- Responsywność --- */
+    /* Tablet */
     @media (max-width: 768px) {
       main { padding: 25px 20px; }
       h2 { font-size: 2.2rem; }
@@ -151,16 +164,24 @@
       button { font-size: 1.1rem; padding: 12px 28px; }
     }
 
+    /* Telefon */
     @media (max-width: 480px) {
-      h2 { font-size: 1.8rem; }
-      p { font-size: 1rem; margin-bottom: 28px; }
-      .digit { display: none; }
-      .dino-sketch { display: none; }
+      h2 { font-size: 1.6rem; text-shadow: none; }
+      p { font-size: 1rem; margin-bottom: 24px; text-shadow: none; }
+      button { 
+        font-size: 1rem; 
+        padding: 14px 24px; 
+        width: 100%; 
+        max-width: 250px;
+        box-shadow: none;
+        border-width: 2px;
+      }
+      .digit, .dino-sketch { display: none; }
+      body { animation: none; }
     }
   </style>
 </head>
 <body>
-  <!-- Neonowy szkic dinozaura -->
   <img class="dino-sketch" src="dino-sketch.png" alt="Neonowy szkic dinozaura" />
 
   <main aria-label="Protokół misji">
@@ -178,9 +199,7 @@
       const btn = document.querySelector('button');
       btn.disabled = true;
       btn.textContent = "⏳ Ładowanie...";
-      setTimeout(() => {
-        location.href = 'stacja1.html';
-      }, 700);
+      setTimeout(() => { location.href = 'stacja1.html'; }, 700);
     }
 
     const digitsCount = window.innerWidth < 480 ? 0 : 40;
@@ -232,4 +251,3 @@
   </script>
 </body>
 </html>
-
