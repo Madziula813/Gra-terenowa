@@ -2,17 +2,16 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stacja 1</title>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
-    html {
+    html, body {
       margin: 0;
       padding: 0;
       height: 100%;
     }
     body {
-      margin: 0;
-      padding: 0;
       font-family: 'Share Tech Mono', monospace;
       background-color: #0a0a0a;
       color: #00ffcc;
@@ -23,23 +22,15 @@
 
     .matrix {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      inset: 0;
       z-index: -1;
       background: black;
-      overflow: hidden;
-    }
-
-    canvas {
-      display: block;
     }
 
     .container {
       max-width: 800px;
-      margin: 120px auto;
-      padding: 30px;
+      margin: 100px auto;
+      padding: 20px 30px;
       text-align: center;
       background: rgba(0, 0, 0, 0.75);
       border: 2px solid #00ffcc;
@@ -49,37 +40,49 @@
 
     h2 {
       color: #ff0055;
-      font-size: 32px;
-      margin-bottom: 30px;
+      font-size: 2rem;
+      margin-bottom: 20px;
       font-weight: bold;
     }
 
     p, code {
-      font-size: 20px;
+      font-size: 1.1rem;
       font-weight: bold;
+      word-wrap: break-word;
+    }
+
+    code {
+      display: block;
+      margin: 10px 0;
+      font-size: 1.2rem;
+      line-height: 1.4;
     }
 
     input {
       background: #000;
       border: 2px solid #00ffcc;
       color: #00ffcc;
-      padding: 10px;
+      padding: 12px;
       margin-top: 10px;
-      width: 80%;
-      font-size: 20px;
+      width: 100%;
+      font-size: 1rem;
       font-weight: bold;
+      box-sizing: border-box;
+      border-radius: 6px;
     }
 
     button {
       background: none;
       border: 2px solid #00ffcc;
       color: #00ffcc;
-      padding: 10px 20px;
-      font-size: 18px;
+      padding: 12px 20px;
+      font-size: 1rem;
       cursor: pointer;
-      margin-top: 20px;
+      margin-top: 15px;
       font-weight: bold;
       text-transform: uppercase;
+      border-radius: 6px;
+      width: 100%;
     }
 
     button:hover {
@@ -89,7 +92,7 @@
 
     .error {
       color: red;
-      font-size: 18px;
+      font-size: 1rem;
       margin-top: 20px;
       animation: blink 1s step-start infinite;
       font-weight: bold;
@@ -100,14 +103,33 @@
     }
 
     .decoded {
-      margin-top: 30px;
+      margin-top: 20px;
       background-color: rgba(0,255,204,0.05);
-      padding: 20px;
+      padding: 15px;
       border: 1px solid #00ffcc;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,255,204,0.3);
-      font-size: 20px;
+      font-size: 1rem;
       font-weight: bold;
+      text-align: left;
+    }
+
+    /* 📱 Mobile adjustments */
+    @media (max-width: 600px) {
+      .container {
+        margin: 50px 10px;
+        padding: 15px;
+        border-radius: 8px;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      p, code {
+        font-size: 1rem;
+      }
+      code {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
@@ -119,10 +141,9 @@
   <div class="container" id="taskContainer">
     <h2>&gt; STACJA [1/4] – SZYFR: 01000101</h2>
     <p>Znaleziono zakodowany przekaz:</p>
-    <p><code style="font-size: 26px;">01000010 01001000 01001100 00100000 01000111 01101111 01100101 01110011 00100000 01010010 01100001 01110111 01110010</code></p>
+    <code>01000010 01001000 01001100 00100000 01000111 01101111 01100101 01110011 00100000 01010010 01100001 01110111 01110010</code>
     <p>Odszyfruj i wpisz treść:</p>
     <input type="text" id="binaryInput" placeholder="Twoja odpowiedź">
-    <br>
     <button onclick="checkBinary()">SPRAWDŹ</button>
   </div>
 
@@ -144,7 +165,7 @@
             <p><em>“Mury tej twierdzy są świadkiem tysiąca inżynierskich tajemnic.<br>
             Ceglane kolumny skrywają źródło kodu.<br>
             Szukałeś odpowiedzi w chmurze, ale czas zejść na ziemię…”<br><br>
-            Współrzędne: 52.2200°N, 21.0110°E.</em></p>
+            Kolejna stacja: 62C5+7X, Warszawa</em></p>
           </div>
         `;
       } else {
@@ -164,13 +185,22 @@
     const canvas = document.getElementById("matrixCanvas");
     const ctx = canvas.getContext("2d");
 
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
 
     const letters = "01";
-    const fontSize = 30;
-    const columns = canvas.width / fontSize;
-    const drops = Array(Math.floor(columns)).fill(1);
+    const fontSize = 20; // mniejsze dla mobilnych
+    const drops = [];
+
+    function initDrops() {
+      const columns = canvas.width / fontSize;
+      drops.length = 0;
+      for (let i = 0; i < columns; i++) drops[i] = 1;
+    }
+    initDrops();
 
     function drawMatrix() {
       ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
@@ -182,7 +212,6 @@
       for (let i = 0; i < drops.length; i++) {
         const text = letters[Math.floor(Math.random() * letters.length)];
         ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
         if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
@@ -192,10 +221,12 @@
 
     setInterval(drawMatrix, 50);
     window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      resizeCanvas();
+      initDrops();
     });
   </script>
 </body>
 </html>
+
+
 
