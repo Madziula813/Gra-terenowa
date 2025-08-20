@@ -185,16 +185,23 @@
   <img class="dino-sketch" src="dino-sketch.png" alt="Neonowy szkic dinozaura" />
 
   <main aria-label="Protokół misji">
-    <h2>&gt; PROTOKÓŁ MISJI</h2>
-    <p>🦖 Czekają na Ciebie <strong>cztery stacje</strong>.<br>
-      Zawierają one zagadkę, szyfr lub zadanie.<br><br>
-      Po rozwiązaniu każdej otrzymasz <strong>fragment kodu</strong>.<br>
-      Połącz je i wpisz w finale, by zdobyć niezwykłą nagrodę.<br>
-      Wraz z symbolami dostaniesz <strong>wskazówkę i lokalizację</strong> kolejnej stacji.<br><br>
-<strong>POWODZENIA</strong>
-    </p>
-    <button onclick="startMission()" aria-label="Zacznij misję">&gt; ZACZNIJ MISJĘ</button>
-  </main>
+  <h2>&gt; PROTOKÓŁ MISJI</h2>
+  <p>🦖 Czekają na Ciebie <strong>cztery stacje</strong>.<br>
+    Zawierają one zagadkę, szyfr lub zadanie.<br><br>
+    Po rozwiązaniu każdej otrzymasz <strong>fragment kodu</strong>.<br>
+    Połącz je i wpisz w finale, by zdobyć niezwykłą nagrodę.<br>
+    Wraz z symbolami dostaniesz <strong>wskazówkę i lokalizację</strong> kolejnej stacji.<br><br>
+    <strong class="highlight">POWODZENIA</strong>
+  </p>
+  <button onclick="startMission()" aria-label="Zacznij misję">&gt; ZACZNIJ MISJĘ</button>
+</main>
+
+<style>
+  .highlight {
+    font-size: 2rem; /* większy rozmiar tylko dla POWODZENIA */
+    color: #ff0055;  /* opcjonalnie zmiana koloru */
+  }
+</style>
 
   <script>
     function startMission() {
