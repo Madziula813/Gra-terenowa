@@ -20,6 +20,10 @@
       min-height: 100vh;
       overflow-x: hidden;
       position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
 
     .matrix {
@@ -30,9 +34,9 @@
     }
 
     .container {
+      width: 100%;
       max-width: 800px;
-      margin: 100px auto;
-      padding: 20px 30px;
+      padding: 20px;
       text-align: center;
       background: rgba(0, 0, 0, 0.75);
       border: 2px solid #00ffcc;
@@ -42,13 +46,13 @@
 
     h2 {
       color: #ff0055;
-      font-size: 2rem;
+      font-size: clamp(1.5rem, 4vw, 2rem);
       margin-bottom: 20px;
       font-weight: bold;
     }
 
     p, code {
-      font-size: 1.1rem;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
       font-weight: bold;
       word-wrap: break-word;
     }
@@ -56,35 +60,32 @@
     code {
       display: block;
       margin: 10px 0;
-      font-size: 1.2rem;
+      font-size: clamp(1rem, 3vw, 1.2rem);
       line-height: 1.4;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      box-sizing: border-box;
     }
 
     input {
       background: #000;
       border: 2px solid #00ffcc;
       color: #00ffcc;
-      padding: 12px;
-      margin-top: 10px;
-      width: 100%;
-      font-size: 1rem;
-      font-weight: bold;
-      box-sizing: border-box;
-      border-radius: 6px;
     }
 
     button {
       background: none;
       border: 2px solid #00ffcc;
       color: #00ffcc;
-      padding: 12px 20px;
-      font-size: 1rem;
       cursor: pointer;
-      margin-top: 15px;
-      font-weight: bold;
       text-transform: uppercase;
-      border-radius: 6px;
-      width: 100%;
     }
 
     button:hover {
@@ -113,24 +114,20 @@
       box-shadow: 0 0 10px rgba(0,255,204,0.3);
       font-size: 1rem;
       font-weight: bold;
-      text-align: left;
+      text-align: center;
     }
 
-    /* 📱 Mobile adjustments */
-    @media (max-width: 600px) {
+    /* dodatkowa optymalizacja na bardzo małe ekrany */
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
       .container {
-        margin: 50px 10px;
         padding: 15px;
-        border-radius: 8px;
       }
-      h2 {
-        font-size: 1.5rem;
-      }
-      p, code {
-        font-size: 1rem;
-      }
-      code {
-        font-size: 1rem;
+      button, input {
+        font-size: 0.9rem;
+        padding: 10px;
       }
     }
   </style>
@@ -143,7 +140,7 @@
   <div class="container" id="taskContainer">
     <h2>&gt; STACJA [1/4] – SZYFR: 01000101</h2>
     <p>Znaleziono zakodowany przekaz:</p>
-    <code>01000010 01001000 01001100 00100000 01000111 01101111 01100101 01110011 00100000 01010010 01100001 01110111 01110010</code>
+    <code>01000100 01101001 01101110 01101111 01010000 01101111 01110111 01100101 01110010</code>
     <p>Odszyfruj i wpisz treść:</p>
     <input type="text" id="binaryInput" placeholder="Twoja odpowiedź">
     <button onclick="checkBinary()">SPRAWDŹ</button>
@@ -152,27 +149,26 @@
   <div class="container" id="binaryResult" style="display:none"></div>
 
   <script>
+    const correctHash = "RGlub1Bvd2Vy";
+
     function checkBinary() {
       const val = document.getElementById('binaryInput').value.trim().toLowerCase();
       const task = document.getElementById('taskContainer');
       const result = document.getElementById('binaryResult');
 
-      if (val === 'bhl goes rawr') {
-        task.style.display = 'none';
-        result.style.display = 'block';
+      task.style.display = 'none';
+      result.style.display = 'block';
+
+      const decoded = atob(correctHash).toLowerCase();
+
+      if(val === decoded) {
         result.innerHTML = `
           <div class="decoded">
-            <p>&gt; Odszyfrowano wiadomość</p>
-            <p>&gt; 🔓 Kod fragmentu: 06</p>
-            <p><em>“Mury tej twierdzy są świadkiem tysiąca inżynierskich tajemnic.<br>
-            Ceglane kolumny skrywają źródło kodu.<br>
-            Szukałeś odpowiedzi w chmurze, ale czas zejść na ziemię…”<br><br>
-            Kolejna stacja: 62C5+7X, Warszawa</em></p>
+            <p style="color:#00ffcc; font-size:1.5rem; font-weight:bold;">ODPOWIEDŹ POPRAWNA</p>
+            <button onclick="location.href='online2.html'" style="margin-top:20px;">STACJA 2</button>
           </div>
         `;
       } else {
-        task.style.display = 'none';
-        result.style.display = 'block';
         result.innerHTML = `
           <div class="error">
             ███ SYSTEM ERROR ██<br>
@@ -194,7 +190,7 @@
     resizeCanvas();
 
     const letters = "01";
-    const fontSize = 20; // mniejsze dla mobilnych
+    const fontSize = 20;
     const drops = [];
 
     function initDrops() {
@@ -229,5 +225,3 @@
   </script>
 </body>
 </html>
-
-

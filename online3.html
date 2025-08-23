@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Stacja 3</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+<link rel="icon" href="bhl.jpg" type="image/jpeg">
+    <link rel="shortcut icon" href="bhl.jpg" type="image/jpeg">
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0; padding: 0; height: 100%;
+      background-color: #0a0a0a;
+      color: #00ffcc;
+      font-family: 'Share Tech Mono', monospace;
+      overflow: hidden;
+    }
+    canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      will-change: transform;
+    }
+    .container {
+      max-width: 600px;
+      margin: 80px auto 40px;
+      padding: 24px 20px;
+      text-align: center;
+      background: rgba(0,0,0,0.75);
+      border: 2px solid #00ffcc;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,255,204,0.2);
+      position: relative;
+      z-index: 2;
+    }
+    h2 { color: #ff0055; font-size: 28px; margin-bottom: 24px; font-weight: bold; }
+    p, code { font-size: 20px; font-weight: bold; }
+    input {
+      width: 100%; padding: 12px; margin-top: 20px;
+      background: #000; border: 2px solid #00ffcc; color: #00ffcc;
+      border-radius: 8px; font-weight: bold; font-size: 18px;
+    }
+    button {
+      background: none; border: 2px solid #00ffcc; color: #00ffcc;
+      padding: 12px 30px; font-size: 18px; cursor: pointer; margin-top: 20px;
+      font-weight: bold; text-transform: uppercase; border-radius: 10px;
+    }
+    button:hover { background-color: #00ffcc; color: #000; }
+    .decoded {
+      margin-top: 30px; background: rgba(0,255,204,0.07); padding: 20px;
+      border: 1px solid #00ffcc; border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,255,204,0.35);
+      font-size: 18px; font-weight: bold; text-align: center;
+    }
+    .error { color: #ff3355; font-size: 18px; margin-top: 24px; font-weight: bold; }
+
+    /* 📱 Ulepszony wygląd na telefonach */
+    @media (max-width: 600px) {
+      .container {
+        margin: 40px 12px;
+        padding: 16px 14px;
+      }
+      h2 { font-size: 22px; margin-bottom: 16px; }
+      p, code { font-size: 16px; }
+      input, button { font-size: 16px; padding: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles"></canvas>
+  <div class="container" id="taskContainer">
+    <h2>&gt; STACJA [3/4] – SZYFR</h2>
+    <p>Odszyfruj liczbowy kod, aby uzyskać hasło:</p>
+    <code>4-9-14-15-19-1-21-18-21-19</code>
+    <input id="dinoInput" type="text" placeholder="Twoja odpowiedź" />
+    <button onclick="checkDino()">SPRAWDŹ</button>
+  </div>
+
+  <div class="container" id="result" style="display:none"></div>
+
+  <script>
+    const correctHash = "RGlub3NhdXJ1cw==";
+
+    function checkDino() {
+      const val = document.getElementById('dinoInput').value.trim().toLowerCase();
+      const task = document.getElementById('taskContainer');
+      const result = document.getElementById('result');
+      const decoded = atob(correctHash).toLowerCase();
+
+      task.style.display = 'none';
+      result.style.display = 'block';
+
+      if(val === decoded){
+        result.innerHTML = `
+          <div class="decoded">
+            <p style="color:#00ffcc; font-size:1.5rem; font-weight:bold;">ODPOWIEDŹ POPRAWNA</p>
+            <button onclick="location.href='online4.html'" style="margin-top:20px;">STACJA 4</button>
+          </div>
+        `;
+      } else {
+        result.innerHTML = `
+          <div class="error">
+            ███ SYSTEM ERROR ██<br>
+            Błędna odpowiedź...<br>
+            <button onclick="location.reload()">&gt; SPRÓBUJ PONOWNIE</button>
+          </div>
+        `;
+      }
+    }
+
+    // ANIMACJA KULKI PORUSZAJĄCE SIĘ PO TLE
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.radius = Math.random() * 3 + 1;
+        this.speedX = (Math.random() - 0.5) * 2;
+        this.speedY = (Math.random() - 0.5) * 2;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if(this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if(this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#00ffcc';
+        ctx.fill();
+      }
+    }
+
+    const particlesArray = [];
+    for(let i = 0; i < 100; i++) particlesArray.push(new Particle());
+
+    function animate() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      particlesArray.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>

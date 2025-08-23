@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stacja 4</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="icon" href="bhl.jpg" type="image/jpeg">
+    <link rel="shortcut icon" href="bhl.jpg" type="image/jpeg">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-x: hidden;
+    }
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background-color: #0a0a0a;
+      color: #00ffcc;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 800px;
+      margin: 80px auto;
+      padding: 25px 35px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.75);
+      border: 2px solid #00ffcc;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0,255,204,0.2);
+      position: relative;
+      z-index: 2;
+      transition: all 0.3s ease;
+    }
+
+    h2 {
+      color: #ff0055;
+      font-size: 2.2rem;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+
+    .special-text {
+      font-size: 1.25rem; 
+      font-weight: 900;   
+      color: red;
+      margin: 20px 0;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    p, code {
+      font-size: 1.1rem;
+      font-weight: bold;
+      word-wrap: break-word;
+    }
+
+    code {
+      display: block;
+      margin: 10px 0;
+      font-size: 1.2rem;
+      line-height: 1.4;
+    }
+
+    input {
+      background: #000;
+      border: 2px solid #00ffcc;
+      color: #00ffcc;
+      padding: 12px;
+      margin-top: 10px;
+      width: 100%;
+      font-size: 1rem;
+      font-weight: bold;
+      box-sizing: border-box;
+      border-radius: 6px;
+    }
+
+    button {
+      background: none;
+      border: 2px solid #00ffcc;
+      color: #00ffcc;
+      padding: 14px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 15px;
+      font-weight: bold;
+      text-transform: uppercase;
+      border-radius: 6px;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #00ffcc;
+      color: #000;
+    }
+
+    .error {
+      color: red;
+      font-size: 1rem;
+      margin-top: 20px;
+      animation: blink 1s step-start infinite;
+      font-weight: bold;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .decoded {
+      margin-top: 20px;
+      background-color: rgba(0,255,204,0.05);
+      padding: 15px;
+      border: 1px solid #00ffcc;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,255,204,0.3);
+      font-size: 1rem;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    img {
+      max-width: 180px;
+      margin-top: 15px;
+      border-radius: 8px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 40px 10px;
+        padding: 15px 20px;
+        border-radius: 8px;
+      }
+      h2 {
+        font-size: 1.5rem;
+      }
+      p, code {
+        font-size: 1rem;
+      }
+      code {
+        font-size: 1rem;
+      }
+      .special-text {
+        font-size: 1.15rem;
+      }
+      button, input {
+        padding: 12px;
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="bgCanvas"></canvas>
+
+  <div class="container" id="taskContainer">
+    <h2>&gt; STACJA [4/4] – JAVASCRIPT</h2>
+    <p>Co wyświetli konsola po wykonaniu tego kodu?</p>
+    <code>
+const hacker = { name: "Alice", skills: ["JS", "Python"] };<br>
+hacker.skills.push("C++");<br>
+console.log(hacker.skills[2]);
+    </code>
+    <input type="text" id="answerInput" placeholder="Twoja odpowiedź">
+    <button onclick="checkAnswer()">SPRAWDŹ</button>
+  </div>
+
+  <div class="container" id="resultContainer" style="display:none"></div>
+
+  <script>
+    function checkAnswer() {
+      const val = document.getElementById('answerInput').value.trim();
+      const task = document.getElementById('taskContainer');
+      const result = document.getElementById('resultContainer');
+
+      if (val.toLowerCase() === 'c++') {
+        task.style.display = 'none';
+        result.style.display = 'block';
+        result.innerHTML = `
+          <div class="decoded">
+            <h2>🎉 GRATULACJE! 🎉</h2>
+            <p>Rozwiązałeś wszystkie zadania poprawnie!</p><br>
+Twoje umiejętności przetrwania w świecie pełnym pułapek i dziwnych zagadek zasługują na medal… albo przynajmniej wirtualny uścisk dłoni.<br><br>
+Dzięki, że grałeś!<br>
+            <div class="special-text">
+              Teraz nadchodzi Twój czas na większą przygodę...<br>
+              BEST Hacking League czeka właśnie na Ciebie!
+            </div><br>
+            <button onclick="window.location.href='https://besthackingleague.pl/'">ZAPISZ SIĘ!</button>
+            <img src="bhl.jpg" alt="BHL Logo">
+          </div>
+        `;
+      } else {
+        task.style.display = 'none';
+        result.style.display = 'block';
+        result.innerHTML = `
+          <div class="error">
+            BŁĘDNA ODPOWIEDŹ!<br>
+            <button onclick="location.reload()">&gt; SPRÓBUJ PONOWNIE</button>
+          </div>
+        `;
+      }
+    }
+
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ["rgba(0,255,204,0.2)", "rgba(128,0,255,0.2)", "rgba(0,128,255,0.2)"];
+
+    class Circle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.radius = Math.random() * 18 + 8;
+        this.speed = Math.random() * 0.05 + 0.02;
+        this.angle = Math.random() * Math.PI * 2;
+        this.color = colors[Math.floor(Math.random()*colors.length)];
+      }
+      update() {
+        this.angle += this.speed;
+        this.y += Math.sin(this.angle) * 2;
+        this.x += Math.cos(this.angle) * 2;
+        if(this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+    }
+
+    const circles = [];
+    for(let i=0; i<80; i++) circles.push(new Circle());
+
+    function animateBackground() {
+      ctx.fillStyle = 'rgba(10,10,10,0.2)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      circles.forEach(c => { c.update(); c.draw(); });
+      requestAnimationFrame(animateBackground);
+    }
+    animateBackground();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hack The Dino</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="icon" href="bhl.jpg" type="image/jpeg">
+    <link rel="shortcut icon" href="bhl.jpg" type="image/jpeg">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Share Tech Mono', monospace;
+      background-color: #0a0a0a;
+      color: #00ffcc;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 20px 10px;
+    }
+
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+    }
+
+    h1 {
+      color: #ff0055;
+      margin-bottom: 10px;
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid #ff0055;
+      animation: typing 2.5s steps(15, end), blink-caret 0.75s step-end infinite;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    @keyframes typing { from { width: 0; } to { width: 100%; } }
+    @keyframes blink-caret { 50% { border-color: transparent; } }
+
+    iframe {
+      width: 100%;
+      max-width: 700px;
+      height: 65vh; /* wysokość proporcjonalna do ekranu */
+      border: none;
+      background: #fff;
+      border-radius: 12px;
+      margin-bottom: 20px;
+    }
+
+    button {
+      width: 100%;
+      max-width: 250px;
+      padding: 12px;
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      font-weight: bold;
+      border: 2px solid #00ffcc;
+      border-radius: 8px;
+      background: none;
+      color: #00ffcc;
+      cursor: pointer;
+      text-transform: uppercase;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    }
+    button:hover { background-color: #00ffcc; color: #000; }
+
+    /* Dodatkowe poprawki dla telefonów */
+    @media (max-width: 600px) {
+      iframe {
+        height: 500px; /* mniejsza wysokość dla smartfonów */
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrixCanvas"></canvas>
+
+  <h1>[Hack The Dino]</h1>
+  <h2>Wersja online</h2>
+
+  <!-- Formularz Google osadzony -->
+  <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdsFdyXHolZmXr-ckUJj9OBkpf8kNh2imgIE7HZ3S6m76PdVQ/viewform?embedded=true">
+    Ładuję…
+  </iframe>
+
+  <!-- Przycisk do gry -->
+  <button onclick="window.location.href='online.html'">GRAJ</button>
+
+  <script>
+    // MATRIX BACKGROUND
+    const canvas = document.getElementById('matrixCanvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()*&^%';
+    const lettersArray = letters.split('');
+    const fontSize = 16;
+    const columns = canvas.width / fontSize;
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#00ffcc';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = lettersArray[Math.floor(Math.random() * lettersArray.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+      requestAnimationFrame(drawMatrix);
+    }
+    drawMatrix();
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+  </script>
+</body>
+</html>
